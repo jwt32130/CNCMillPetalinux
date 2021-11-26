@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/project-spec/meta-user/**",
+                "/home/jacob/petalinux/PetaLinux/2021.1/tool/tools/xsct/gnu/aarch32/lin/gcc-arm-none-eabi/x86_64-oesdk-linux/usr/lib/arm-xilinx-eabi/gcc/arm-xilinx-eabi/10.2.0/include",
+                "${workspaceFolder}/../linux-xlnx-generated/arch/arm/include",
+                "${workspaceFolder}/../linux-xlnx-generated/arch/arm/include/generated",
+                "${workspaceFolder}/../linux-xlnx-generated/include",
+                "${workspaceFolder}/../linux-xlnx-generated/arch/arm/include/uapi",
+                "${workspaceFolder}/../linux-xlnx-generated/arch/arm/include/generated/uapi",
+                "${workspaceFolder}/../linux-xlnx-generated/include/uapi",
+                "${workspaceFolder}/../linux-xlnx-generated/include/generated/uapi"
+            ],
+            "defines": [
+                "__KERNEL__",
+                "CC_HAVE_ASM_GOTO",
+                "__LINUX_ARM_ARCH__=7",
+                "MODULE"
+            ],
+            "compilerPath": "/home/jacob/petalinux/PetaLinux/2021.1/tool/tools/xsct/gnu/aarch32/lin/gcc-arm-none-eabi/bin/arm-none-eabi-gcc",
+            "compilerArgs": ["-nostdinc"],
+            "cStandard": "gnu17"
+        }
+    ],
+    "version": 4
+}

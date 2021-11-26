@@ -3981,6 +3981,11 @@ CONFIG_auto-login=y
 # CONFIG_peekpoke is not set
 
 #
+# modules 
+#
+CONFIG_testadder=y
+
+#
 # user packages 
 #
 

@@ -22,16 +22,23 @@
 
 };
 
-// &gem0 {
-// 	phy-handle = <&ethernet_phy>;
-// /*	phy-reset-gpio = <&axi_gpio_eth 0 0>;
-// 	phy-reset-active-low;	
-// 	phy-reset-duration = <10>; */
-// 	ethernet_phy: ethernet-phy@1 { /* rtl8211e-vl */
-// 		reg = <1>;
-// 		device_type = "ethernet-phy";
-// 	};
-// };
+&gem0 {
+	phy-handle = <&ethernet_phy>;
+/*	phy-reset-gpio = <&axi_gpio_eth 0 0>;
+	phy-reset-active-low;	
+	phy-reset-duration = <10>; */
+	ethernet_phy: ethernet-phy@1 { /* rtl8211e-vl */
+		reg = <1>;
+		device_type = "ethernet-phy";
+	};
+};
+
+&TestAdder_0 {
+    compatible = "jacob,testadder";
+	interrupt-names = "testadder_introut";
+	interrupt-parent = <&intc>;
+	interrupts = <0 30 4>;
+};
 
 // &usb0 {	
 // 	dr_mode = "host";

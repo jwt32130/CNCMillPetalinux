@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "io.h": "c",
+        "kernel.h": "c",
+        "limits.h": "c",
+        "types.h": "c",
+        "int-ll64.h": "c"
+    }
+}
