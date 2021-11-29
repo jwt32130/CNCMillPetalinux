@@ -3977,12 +3977,14 @@ CONFIG_auto-login=y
 #
 # apps 
 #
+CONFIG_dmatest=y
 # CONFIG_gpio-demo is not set
 # CONFIG_peekpoke is not set
 
 #
 # modules 
 #
+CONFIG_dmalooptest=y
 CONFIG_testadder=y
 
 #
