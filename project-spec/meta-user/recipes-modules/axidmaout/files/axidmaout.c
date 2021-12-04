@@ -101,6 +101,70 @@ __poll_t dma_poll (struct file *pFile, struct poll_table_struct *wait);
 
 void setup_DMA_transfer(struct device_data *dat, int buff_number, int count);
 
+ssize_t write_dma_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count) {
+	struct device_data *dev_data = dev_get_drvdata(dev);
+	int value;
+	int ret;
+	int bufnumber;
+	int buf_count = -EINVAL; /*not valid cmd*/
+	bool dma_data = false;
+	ret = kstrtoint(buf, 0, &value);
+	/*check for -EINVAL or -ERANGE*/
+	if(ret) return ret;
+
+	if(value == 1) {
+		/*write current dma buffer*/
+		mutex_lock(&dev_data->buff_ctrl_mutex);
+
+		if(dev_data->pos) {
+			/*copy succeded*/
+			/*lock so we can decide if we need to queue next dma buf or the callback will*/
+			spin_lock_bh(&dev_data->buff_ctrl_lock);
+			bufnumber = dev_data->Fill_buffer;
+			if(dev_data->Fill_buffer != dev_data->DMA_active_buffer)
+			{
+				buf_count = dev_data->pos;
+				if(dev_data->DMA_active_buffer == -1) {
+					/*no pending DMA's to queue up a transfer, claim transfer now*/
+					dma_data = true;
+					dev_data->DMA_active_buffer = dev_data->Fill_buffer;
+				}
+				dev_data->next_buff_count = buf_count;
+				/*correct for next buffer*/
+				dev_data->Fill_buffer++;
+				if(dev_data->Fill_buffer > 1) dev_data->Fill_buffer = 0;
+				dev_data->pos = 0;
+			}
+			else {
+				buf_count = -EAGAIN; /*try again, buffers busy*/
+			}
+			spin_unlock_bh(&dev_data->buff_ctrl_lock);
+		} else {
+			/*no data to transfer*/
+			buf_count = -EINVAL;
+		}
+		mutex_unlock(&dev_data->buff_ctrl_mutex);
+
+		if(dma_data == true) {
+			//send data function bufnumber
+			setup_DMA_transfer(dev_data, bufnumber, buf_count);
+		}
+		
+	}
+	return buf_count;
+}
+static DEVICE_ATTR_WO(write_dma);
+static struct attribute *dma_attrs[] = {
+	&dev_attr_write_dma.attr,
+	NULL
+};
+static struct attribute_group dma_attr_group = {
+	.attrs = dma_attrs
+};
+static const struct attribute_group *dma_attr_groups[] = {
+	&dma_attr_group,
+	NULL
+};
 struct file_operations dma_fops = {
 	.open = dma_open,
 	.release = dma_release,
@@ -387,7 +451,8 @@ static int axidmaout_probe(struct platform_device *pdev)
 		goto release_mem;
     }
 
-	drv_data.device_dma = device_create(drv_data.class_dma, NULL, dev_data->dev_num, dev, "dma-0");
+	// drv_data.device_dma = device_create(drv_data.class_dma, NULL, dev_data->dev_num, dev, "dma-0");
+	drv_data.device_dma = device_create_with_groups(drv_data.class_dma, dev, dev_data->dev_num, dev_data, dma_attr_groups, "dma-%d", MINOR(dev_data->dev_num));
 	if(IS_ERR(drv_data.device_dma)) {
 		pr_err("device create failed\n");
 		ret = PTR_ERR(drv_data.device_dma);
@@ -425,7 +490,7 @@ release_mem:
 	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->buffers[1], dev_data->tx_dma_addr[1]);
 	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[0], dev_data->rx_dma_addr[0]);
 	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[1], dev_data->rx_dma_addr[1]);
-	printk("axidma: probe failed\n");
+	pr_alert("axidma: probe failed\n");
 	return ret;
 
 }
@@ -435,27 +500,20 @@ static int axidmaout_remove(struct platform_device *pdev)
 	struct device_data *dev_data = dev_get_drvdata(&pdev->dev);
 	struct device *dev = &pdev->dev;
 
-    /*Revoce device that was created with cevice create*/
-    // device_destroy(pcdrv_data.class_pcd, dev_data->dev_num);
-    /*remove cdev entry*/
-	printk("axidma: removed enter\n");
+	pr_info("axidma: removed enter\n");
+	dma_release_channel(dev_data->rx_chan);
+	dma_release_channel(dev_data->tx_chan);
+
+	device_destroy(drv_data.class_dma, dev_data->dev_num);
+
+    cdev_del(&dev_data->_cdev);
+
 	dma_free_coherent(dev, (DMA_U8_SIZE), dev_data->buffers[0], dev_data->tx_dma_addr[0]);
 	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->buffers[1], dev_data->tx_dma_addr[1]);
 	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[0], dev_data->rx_dma_addr[0]);
 	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[1], dev_data->rx_dma_addr[1]);
-	dma_release_channel(dev_data->rx_chan);
-	dma_release_channel(dev_data->tx_chan);
-	/*thread stop waits until thread fully exits*/
-	// kthread_stop(dev_data->t_thread);
-	device_destroy(drv_data.class_dma, dev_data->dev_num);
-    cdev_del(&dev_data->_cdev);
-    /*free memory*/
-    /*kfree(dev_data->buffer);*/
-    /*kfree(dev_data);*/
 
-    dev_info(&pdev->dev, "A device is removed\n");
-	
-	pr_err("axidma: removed exit\n");
+	pr_info("axidma: removed exit\n");
 	return 0;
 }
 
