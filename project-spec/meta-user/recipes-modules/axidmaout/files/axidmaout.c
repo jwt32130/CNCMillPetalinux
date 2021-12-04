@@ -46,7 +46,7 @@ MODULE_DESCRIPTION
 
 #define DRIVER_NAME "axidmaout"
 
-/*axi dma needs to be 16word aligned (16*6bytes min transfer) (0x40)*/
+/*axi dma needs to be 16word aligned (16*4bytes min transfer) (0x40)*/
 /*axi dma curdesc reg    31---------6|5|4|3|2|1|0 */
 /************************************|5-0 bits are ignored */
 //#define DMA_BUFF_SIZE 1024
