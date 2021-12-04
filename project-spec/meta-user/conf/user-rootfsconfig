@@ -7,3 +7,5 @@ CONFIG_testadder
 CONFIG_dmatest
 CONFIG_dmalooptest
 CONFIG_axidmaout
+CONFIG_DMApolltest
+CONFIG_axidmapolltest

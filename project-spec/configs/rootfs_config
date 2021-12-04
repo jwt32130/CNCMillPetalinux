@@ -3977,6 +3977,8 @@ CONFIG_auto-login=y
 #
 # apps 
 #
+# CONFIG_DMApolltest is not set
+CONFIG_axidmapolltest=y
 CONFIG_dmatest=y
 # CONFIG_gpio-demo is not set
 # CONFIG_peekpoke is not set

@@ -1,0 +1,5 @@
+jtloadkernel=tftpboot ${kernel_addr_r} image.ub
+jtloaddtb=tftpboot ${fdt_addr_r} system.dtb
+jtloadinitramd=tftpboot ${ramdisk_addr_r} rootfs.cpio.gz.u-boot; setenv initrd_size ${filesize}
+bootargs=console=ttyPS0,115200 earlyprintk uio_pdrv_genirq.of_id=generic-uio cma=64M root=dev/ram0 rw
+distro_bootcmd=echo JTBOOTCMD; run jtloadkernel; run jtloaddtb; run jtloadinitramd; bootm ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr_r};
