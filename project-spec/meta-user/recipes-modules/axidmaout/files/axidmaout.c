@@ -67,7 +67,7 @@ struct device_data {
 	/*protected by mutex*/
 	struct mutex buff_ctrl_mutex;
 	u8 *buffers[2];
-	u8 *tmpbuffers[2];
+	// u8 *tmpbuffers[2];
 	int pos;
 	/*end protected by mutex*/
 	/*protected by spinlock betweent tasklet and driver write*/
@@ -80,7 +80,7 @@ struct device_data {
 	struct cdev _cdev;
 	dev_t dev_num;
 	struct dma_chan *tx_chan;
-	struct dma_chan *rx_chan;
+	// struct dma_chan *rx_chan;
 
 
 	dma_addr_t tx_dma_addr[2];
@@ -88,10 +88,10 @@ struct device_data {
 	dma_cookie_t txcookie;
 	enum dma_status txstatus;
 
-	dma_addr_t rx_dma_addr[2];
-	struct dma_async_tx_descriptor *rxd;
-	dma_cookie_t rxcookie;
-	enum dma_status rxstatus;
+	// dma_addr_t rx_dma_addr[2];
+	// struct dma_async_tx_descriptor *rxd;
+	// dma_cookie_t rxcookie;
+	// enum dma_status rxstatus;
 };
 
 int dma_open (struct inode *pInode, struct file *pFile);
@@ -245,13 +245,13 @@ void setup_DMA_transfer(struct device_data *dat, int buff_number, int count) {
 	// unsigned long txtimeout = msecs_to_jiffies(3000);
 	// enum dma_status txstatus;
 
-	struct dma_chan *rx_chan = dat->rx_chan;
+	// struct dma_chan *rx_chan = dat->rx_chan;
 
-	enum dma_ctrl_flags rx_flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
-	u8 *rx_buf = dat->tmpbuffers[buff_number];
-	dma_addr_t *rx_dma_addr = &dat->rx_dma_addr[buff_number];
-	struct dma_async_tx_descriptor *rxd = dat->rxd;
-	dma_cookie_t *rxcookie = &dat->rxcookie;
+	// enum dma_ctrl_flags rx_flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
+	// u8 *rx_buf = dat->tmpbuffers[buff_number];
+	// dma_addr_t *rx_dma_addr = &dat->rx_dma_addr[buff_number];
+	// struct dma_async_tx_descriptor *rxd = dat->rxd;
+	// dma_cookie_t *rxcookie = &dat->rxcookie;
 	// unsigned long rxtimeout = msecs_to_jiffies(3000);
 	// enum dma_status rxstatus;
 	int aligned_count;
@@ -276,14 +276,14 @@ void setup_DMA_transfer(struct device_data *dat, int buff_number, int count) {
 	txd = dmaengine_prep_slave_single(tx_chan, *tx_dma_addr, aligned_count, DMA_MEM_TO_DEV, tx_flags);
 	txd->callback = tx_transfer_complete;
 	txd->callback_param = dat;
-	rxd = dmaengine_prep_slave_single(rx_chan, *rx_dma_addr, aligned_count, DMA_DEV_TO_MEM, rx_flags);
+	// rxd = dmaengine_prep_slave_single(rx_chan, *rx_dma_addr, aligned_count, DMA_DEV_TO_MEM, rx_flags);
 	// rxd->callback = rx_transfer_complete;
 	// rxd->callback_param = dat;
 
 	*txcookie = dmaengine_submit(txd);
-	*rxcookie = dmaengine_submit(rxd);
+	// *rxcookie = dmaengine_submit(rxd);
 
-	dma_async_issue_pending(rx_chan);
+	// dma_async_issue_pending(rx_chan);
 	dma_async_issue_pending(tx_chan);
 
 	pr_info("axidma: dmastarted\n");
@@ -413,8 +413,8 @@ static int axidmaout_probe(struct platform_device *pdev)
 	dev_data->pos = 0;
 	dev_data->buffers[0] = dma_alloc_coherent(dev, (DMA_U8_SIZE), &dev_data->tx_dma_addr[0], GFP_KERNEL);
 	dev_data->buffers[1] = dma_alloc_coherent(dev, (DMA_U8_SIZE), &dev_data->tx_dma_addr[1], GFP_KERNEL);
-	dev_data->tmpbuffers[0] = dma_alloc_coherent(dev, (DMA_U8_SIZE), &dev_data->rx_dma_addr[0], GFP_KERNEL);
-	dev_data->tmpbuffers[1] = dma_alloc_coherent(dev, (DMA_U8_SIZE), &dev_data->rx_dma_addr[1], GFP_KERNEL);
+	// dev_data->tmpbuffers[0] = dma_alloc_coherent(dev, (DMA_U8_SIZE), &dev_data->rx_dma_addr[0], GFP_KERNEL);
+	// dev_data->tmpbuffers[1] = dma_alloc_coherent(dev, (DMA_U8_SIZE), &dev_data->rx_dma_addr[1], GFP_KERNEL);
 	// dev_data->buffers[0] = devm_kmalloc(dev, (DMA_U8_SIZE), GFP_KERNEL);
 	// dev_data->buffers[1] = devm_kmalloc(dev, (DMA_U8_SIZE), GFP_KERNEL);
 	// dev_data->tmpbuffers[0] = devm_kmalloc(dev, (DMA_U8_SIZE), GFP_KERNEL);
@@ -422,14 +422,14 @@ static int axidmaout_probe(struct platform_device *pdev)
 	mutex_unlock(&dev_data->buff_ctrl_mutex);
 
 	if(!dev_data->buffers[0] || 
-		!dev_data->buffers[1] ||
-		!dev_data->tmpbuffers[0] ||
-		!dev_data->tmpbuffers[1] ) 
+		!dev_data->buffers[1] )
+		// !dev_data->tmpbuffers[0] ||
+		// !dev_data->tmpbuffers[1] ) 
 	{
 		if(dev_data->buffers[0]) dma_free_coherent(dev, (DMA_U8_SIZE), dev_data->buffers[0], dev_data->tx_dma_addr[0]);
 		if(dev_data->buffers[1]) dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->buffers[1], dev_data->tx_dma_addr[1]);
-		if(dev_data->tmpbuffers[0]) dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[0], dev_data->rx_dma_addr[0]);
-		if(dev_data->tmpbuffers[1]) dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[1], dev_data->rx_dma_addr[1]);
+		// if(dev_data->tmpbuffers[0]) dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[0], dev_data->rx_dma_addr[0]);
+		// if(dev_data->tmpbuffers[1]) dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[1], dev_data->rx_dma_addr[1]);
 
 		dev_info(dev, "Cannot allocate memory\n");
 		return -ENOMEM;
@@ -437,9 +437,9 @@ static int axidmaout_probe(struct platform_device *pdev)
 	
 
 	pr_info("dmatest: tx virt addr: %x:%x\n", dev_data->buffers[0], dev_data->buffers[1]);
-	pr_info("dmatest: rx virt addr: %x:%x\n", dev_data->tmpbuffers[0], dev_data->tmpbuffers[1]);
+	// pr_info("dmatest: rx virt addr: %x:%x\n", dev_data->tmpbuffers[0], dev_data->tmpbuffers[1]);
 	pr_info("dmatest: tx phys addr: %x:%x\n", virt_to_phys((void*)dev_data->buffers[0]), virt_to_phys((void*)dev_data->buffers[1]));
-	pr_info("dmatest: rx phys addr: %x:%x\n", virt_to_phys((void*)dev_data->tmpbuffers[0]), virt_to_phys((void*)dev_data->tmpbuffers[1]));
+	// pr_info("dmatest: rx phys addr: %x:%x\n", virt_to_phys((void*)dev_data->tmpbuffers[0]), virt_to_phys((void*)dev_data->tmpbuffers[1]));
 
 	/*do cdev init and cdev add*/
     cdev_init(&dev_data->_cdev, &dma_fops);
@@ -468,14 +468,14 @@ static int axidmaout_probe(struct platform_device *pdev)
 		goto dev_destroy;
 	}
 
-	printk("axidma: request rx channel from dma engine/device tree\n");
-	dev_data->rx_chan = dma_request_chan(&pdev->dev, "axidma1");
-	if (IS_ERR(dev_data->rx_chan)) {
-		ret = PTR_ERR(dev_data->rx_chan);
-		if (ret != -EPROBE_DEFER)
-			pr_err("xilinx_dmatest: No Rx channel\n");
-		goto tx_dma_release;
-	}
+	// printk("axidma: request rx channel from dma engine/device tree\n");
+	// dev_data->rx_chan = dma_request_chan(&pdev->dev, "axidma1");
+	// if (IS_ERR(dev_data->rx_chan)) {
+	// 	ret = PTR_ERR(dev_data->rx_chan);
+	// 	if (ret != -EPROBE_DEFER)
+	// 		pr_err("xilinx_dmatest: No Rx channel\n");
+	// 	goto tx_dma_release;
+	// }
 
 	return 0;
 	
@@ -488,8 +488,8 @@ dev_del:
 release_mem:
 	dma_free_coherent(dev, (DMA_U8_SIZE), dev_data->buffers[0], dev_data->tx_dma_addr[0]);
 	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->buffers[1], dev_data->tx_dma_addr[1]);
-	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[0], dev_data->rx_dma_addr[0]);
-	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[1], dev_data->rx_dma_addr[1]);
+	// dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[0], dev_data->rx_dma_addr[0]);
+	// dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[1], dev_data->rx_dma_addr[1]);
 	pr_alert("axidma: probe failed\n");
 	return ret;
 
@@ -501,7 +501,7 @@ static int axidmaout_remove(struct platform_device *pdev)
 	struct device *dev = &pdev->dev;
 
 	pr_info("axidma: removed enter\n");
-	dma_release_channel(dev_data->rx_chan);
+	// dma_release_channel(dev_data->rx_chan);
 	dma_release_channel(dev_data->tx_chan);
 
 	device_destroy(drv_data.class_dma, dev_data->dev_num);
@@ -510,8 +510,8 @@ static int axidmaout_remove(struct platform_device *pdev)
 
 	dma_free_coherent(dev, (DMA_U8_SIZE), dev_data->buffers[0], dev_data->tx_dma_addr[0]);
 	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->buffers[1], dev_data->tx_dma_addr[1]);
-	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[0], dev_data->rx_dma_addr[0]);
-	dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[1], dev_data->rx_dma_addr[1]);
+	// dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[0], dev_data->rx_dma_addr[0]);
+	// dma_free_coherent(dev, (DMA_U8_SIZE),  dev_data->tmpbuffers[1], dev_data->rx_dma_addr[1]);
 
 	pr_info("axidma: removed exit\n");
 	return 0;

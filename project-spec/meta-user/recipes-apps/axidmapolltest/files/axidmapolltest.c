@@ -45,6 +45,14 @@ int main(int argc, char **argv)
     if(fd == -1) {
         printf("Failed to open file\n");
     }
+    printf("File open\n");
+    uint8_t m1;
+    int timer = 500000; //16000000/50mhz ~.3seconds
+    
+    for(int i = 0; i < 2048; i++) {
+        m1 = (i & 0xff);
+        buff[i] = timer + (m1 << 24);
+    }
 
     pfd.fd = fd;
     pfd.events = ( POLLOUT | POLLWRNORM );

@@ -21,9 +21,10 @@
 
 	axidmatest_1: axidmatest@1 {
 		compatible = "jacob,axidmaout";
-		dmas = <&axi_dma_0 0
-				&axi_dma_0 1>;
-		dma-names = "axidma0", "axidma1";
+		dmas = <&axi_dma_0 0>;
+				// &axi_dma_0 1>;
+		// dma-names = "axidma0", "axidma1";
+		dma-names = "axidma0";
 	};
 
 
@@ -39,7 +40,9 @@
 		device_type = "ethernet-phy";
 	};
 };
-
+&CNC_ControlBlock_0 {
+	compatible = "jacob,cnccontroller";
+};
 &TestAdder_0 {
     compatible = "jacob,testadder";
 	interrupt-names = "testadder_introut";

@@ -1,0 +1,10 @@
+
+
+OPTION psf_version = 2.1;
+
+BEGIN DRIVER CNC_ControlBlock
+	OPTION supported_peripherals = (CNC_ControlBlock);
+	OPTION copyfiles = all;
+	OPTION VERSION = 1.0;
+	OPTION NAME = CNC_ControlBlock;
+END DRIVER

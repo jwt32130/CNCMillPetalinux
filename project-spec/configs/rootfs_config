@@ -3987,6 +3987,7 @@ CONFIG_dmatest=y
 # modules 
 #
 CONFIG_axidmaout=y
+CONFIG_cnccontroller=y
 CONFIG_dmalooptest=y
 CONFIG_testadder=y
 

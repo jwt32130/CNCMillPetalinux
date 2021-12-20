@@ -9,3 +9,4 @@ CONFIG_dmalooptest
 CONFIG_axidmaout
 CONFIG_DMApolltest
 CONFIG_axidmapolltest
+CONFIG_cnccontroller
