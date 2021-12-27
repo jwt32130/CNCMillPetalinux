@@ -520,16 +520,16 @@ CONFIG_can-utils=y
 #
 # openssh 
 #
-# CONFIG_openssh is not set
+CONFIG_openssh=y
 # CONFIG_openssh-misc is not set
 # CONFIG_openssh-dbg is not set
-# CONFIG_openssh-sshd is not set
-# CONFIG_openssh-keygen is not set
-# CONFIG_openssh-ssh is not set
+CONFIG_openssh-sshd=y
+CONFIG_openssh-keygen=y
+CONFIG_openssh-ssh=y
 # CONFIG_openssh-dev is not set
-# CONFIG_openssh-sftp is not set
+CONFIG_openssh-sftp=y
 CONFIG_openssh-sftp-server=y
-# CONFIG_openssh-scp is not set
+CONFIG_openssh-scp=y
 
 #
 # ppp 
@@ -2334,10 +2334,10 @@ CONFIG_udev-extraconf=y
 #
 # gdb 
 #
-# CONFIG_gdb is not set
+CONFIG_gdb=y
 # CONFIG_gdb-dbg is not set
 # CONFIG_gdb-dev is not set
-# CONFIG_gdbserver is not set
+CONFIG_gdbserver=y
 
 #
 # glib-2.0 
@@ -2601,7 +2601,7 @@ CONFIG_packagegroup-core-boot=y
 #
 # packagegroup-core-ssh-dropbear 
 #
-CONFIG_packagegroup-core-ssh-dropbear=y
+# CONFIG_packagegroup-core-ssh-dropbear is not set
 # CONFIG_packagegroup-core-ssh-dropbear-dbg is not set
 # CONFIG_packagegroup-core-ssh-dropbear-dev is not set
 
@@ -3967,8 +3967,8 @@ CONFIG_u-boot-tools=y
 #
 # Image Features
 #
-CONFIG_imagefeature-ssh-server-dropbear=y
-# CONFIG_imagefeature-ssh-server-openssh is not set
+# CONFIG_imagefeature-ssh-server-dropbear is not set
+CONFIG_imagefeature-ssh-server-openssh=y
 CONFIG_imagefeature-hwcodecs=y
 # CONFIG_imagefeature-package-management is not set
 CONFIG_imagefeature-debug-tweaks=y
@@ -3998,5 +3998,5 @@ CONFIG_testadder=y
 #
 # PetaLinux RootFS Settings
 #
-CONFIG_ROOTFS_ROOT_PASSWD="root"
+CONFIG_ROOTFS_ROOT_PASSWD="123"
 CONFIG_ADD_EXTRA_USERS="petalinux:petalinux;"

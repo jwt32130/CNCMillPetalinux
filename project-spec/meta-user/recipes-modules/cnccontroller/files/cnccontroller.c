@@ -22,6 +22,7 @@
 #include <linux/slab.h>
 #include <linux/io.h>
 #include <linux/interrupt.h>
+#include <linux/mutex.h>
 
 #include <linux/of_address.h>
 #include <linux/of_device.h>
@@ -35,6 +36,10 @@ MODULE_DESCRIPTION
     ("cnccontroller - splits an axi stream of data to separate controllers and handles feedback");
 
 #define DRIVER_NAME "cnccontroller"
+#define CTRL_RESET (0x1 << 0)
+#define CTRL_STOP_CLEAR (0x1 << 1)
+#define CTRL_STOP_RESET (0x1 << 2)
+#define CTRL_EN_REVERSE (0x1 << 3)
 
 
 struct driver_data {
@@ -52,27 +57,94 @@ struct cnccontroller_local {
 	unsigned int *ctrl_reg;
 	unsigned int *status_reg;
 	unsigned int *opcount_reg;
+	struct mutex ctrl_mutex;
 };
 ssize_t reset_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count) {
 	unsigned int regvalue;
 	int ret;
 	struct cnccontroller_local *lp = dev_get_drvdata(dev->parent);
+	mutex_lock(&lp->ctrl_mutex);
+	regvalue = *(lp->ctrl_reg);
 	if(sysfs_streq(buf,"1")) {
 		printk("resetting cncController\n");
-		*(lp->ctrl_reg) = 0x00000005;
+		*(lp->ctrl_reg) = regvalue | (CTRL_RESET);
 	} else {
 		printk("clearing reset cncController\n");
-		*(lp->ctrl_reg) = 0x00000000;
+		*(lp->ctrl_reg) = regvalue & ~(CTRL_RESET);
 	}
+	mutex_unlock(&lp->ctrl_mutex);
 	
 	return count;
 }
+ssize_t stop_clear_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count) {
+	unsigned int regvalue;
+	int ret;
+	struct cnccontroller_local *lp = dev_get_drvdata(dev->parent);
+	mutex_lock(&lp->ctrl_mutex);
+	regvalue = *(lp->ctrl_reg);
+	if(sysfs_streq(buf,"1")) {
+		printk("resetting cncController\n");
+		*(lp->ctrl_reg) = regvalue | (CTRL_STOP_CLEAR);
+	} else {
+		printk("clearing reset cncController\n");
+		*(lp->ctrl_reg) = regvalue & ~(CTRL_STOP_CLEAR);
+	}
+	mutex_unlock(&lp->ctrl_mutex);
+	
+	return count;
+}
+ssize_t stop_reset_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count) {
+	unsigned int regvalue;
+	int ret;
+	struct cnccontroller_local *lp = dev_get_drvdata(dev->parent);
+	mutex_lock(&lp->ctrl_mutex);
+	regvalue = *(lp->ctrl_reg);
+	if(sysfs_streq(buf,"1")) {
+		printk("resetting cncController\n");
+		*(lp->ctrl_reg) = regvalue | (CTRL_STOP_RESET);
+	} else {
+		printk("clearing reset cncController\n");
+		*(lp->ctrl_reg) = regvalue & ~(CTRL_STOP_RESET);
+	}
+	mutex_unlock(&lp->ctrl_mutex);
+	
+	return count;
+}
+ssize_t enable_reverse_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count) {
+	unsigned int regvalue;
+	int ret;
+	struct cnccontroller_local *lp = dev_get_drvdata(dev->parent);
+	mutex_lock(&lp->ctrl_mutex);
+	regvalue = *(lp->ctrl_reg);
+	if(sysfs_streq(buf,"1")) {
+		printk("resetting cncController\n");
+		*(lp->ctrl_reg) = regvalue | (CTRL_EN_REVERSE);
+	} else {
+		printk("clearing reset cncController\n");
+		*(lp->ctrl_reg) = regvalue & ~(CTRL_EN_REVERSE);
+	}
+	mutex_unlock(&lp->ctrl_mutex);
+	
+	return count;
+}
+ssize_t opcount_show(struct device *dev, struct device_attribute *attr, char *buf) {
+	struct cnccontroller_local *lp = dev_get_drvdata(dev->parent);
+	return sprintf(buf, "%d\n", *lp->opcount_reg);
+}
 static DEVICE_ATTR_WO(reset);
+static DEVICE_ATTR_WO(stop_clear);
+static DEVICE_ATTR_WO(stop_reset);
+static DEVICE_ATTR_WO(enable_reverse);
+static DEVICE_ATTR_RO(opcount);
 // static DEVICE_ATTR_WO(stop_and_clear);
 // static DEVICE_ATTR_WO(reset_stop);
 // static DEVICE_ATTR_WO(enable_reverse);
 static struct attribute *cncC_attrs[] = {
 	&dev_attr_reset.attr,
+	&dev_attr_stop_clear.attr,
+	&dev_attr_stop_reset.attr,
+	&dev_attr_enable_reverse.attr,
+	&dev_attr_opcount.attr,
 	NULL
 };
 static struct attribute_group cncC_attr_group = {
@@ -108,6 +180,9 @@ static int cnccontroller_probe(struct platform_device *pdev)
 		dev_err(dev, "Cound not allocate cnccontroller device\n");
 		return -ENOMEM;
 	}
+
+	mutex_init(&lp->ctrl_mutex);
+
 	dev_set_drvdata(dev, lp);
 	lp->mem_start = r_mem->start;
 	lp->mem_end = r_mem->end;

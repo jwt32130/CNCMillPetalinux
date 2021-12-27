@@ -35,30 +35,38 @@
 #include <stdint.h>
 #include <memory.h>
 
-uint64_t buff[(2*1024)];
+#define buflength 2048
+uint64_t buff[buflength];
 int main(int argc, char **argv)
 {
     struct pollfd pfd;
     int ret;
+
+    int rst_fd = open("/sys/class/cncController/cncC0/stop_reset", O_WRONLY | O_NONBLOCK);
+    if(rst_fd == -1) {
+        printf("Failed to open sysfs file\n");
+    }
+    ret = write(rst_fd, "1", 1);
 
     int fd = open("/dev/dma-0", O_WRONLY | O_NONBLOCK);
     if(fd == -1) {
         printf("Failed to open file\n");
     }
     printf("File open\n");
-    uint8_t m1;
-    int timer = 500000; //16000000/50mhz ~.3seconds
+    uint8_t m1 = 0x03;
+    uint8_t m2 = 0x03;
+    uint8_t m3 = 0x03;
+    int timer = (720*2)/20; //16000000/50mhz ~.3seconds
     
-    for(int i = 0; i < 2048; i++) {
-        m1 = (i & 0xff);
-        buff[i] = timer + (m1 << 24);
+    for(int i = 0; i < buflength; i++) {
+        buff[i] = (uint64_t)timer + ((uint64_t)m1 << 24) + ((uint64_t)m2 << 32) + ((uint64_t)m3 << 40);
     }
 
     pfd.fd = fd;
     pfd.events = ( POLLOUT | POLLWRNORM );
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < 100; i++) {
         printf("APP: poll start\n");
-        ret = poll(&pfd, (unsigned long)1, 5000);
+        ret = poll(&pfd, (unsigned long)1, 20000);
         printf("%x:%x\n", ret, pfd.revents);
         if(ret < 0) {
             printf("Error in polling\n");

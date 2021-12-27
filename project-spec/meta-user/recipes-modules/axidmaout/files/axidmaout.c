@@ -191,7 +191,7 @@ void tx_transfer_complete(void *dat) {
 		pr_err("axidma: tx dma error\n");
 		return;
 	} else {
-		pr_info("axidmaout: tx complete\n");
+		// pr_info("axidmaout: tx complete\n");
 
 		/* dma_unmap_single(dev_data->tx_chan->device->dev, dev_data->tx_dma_addr, DMA_U8_SIZE, DMA_TO_DEVICE);*/
 		
@@ -209,12 +209,12 @@ void tx_transfer_complete(void *dat) {
 		}
 		spin_unlock_bh(&dev_data->buff_ctrl_lock);
 		if(dma_data == true) {
-			pr_info("axidmaout: setup from callback\n");
+			// pr_info("axidmaout: setup from callback\n");
 			setup_DMA_transfer(dev_data, bufnumber, buf_count);
 		}
 		wake_up(&wait_queue_poll_data);
 	}
-	pr_info("axidmaout: tx exit\n");
+	//pr_info("axidmaout: tx exit\n");
 	return;
 }
 void rx_transfer_complete(void *cmp) {
@@ -224,14 +224,14 @@ void rx_transfer_complete(void *cmp) {
 }
 int dma_open (struct inode *pInode, struct file *pFile) {
 	struct device_data *dev_data;
-	pr_info("axidmaout: Device file opened\n");
+	// pr_info("axidmaout: Device file opened\n");
 	dev_data = container_of(pInode->i_cdev, struct device_data, _cdev);
 	pFile->private_data = dev_data;
 	/*should really only allow 1 file open here at a time*/
 	return 0;
 }
 int dma_release (struct inode *pInode, struct file *pFile) {
-	pr_info("axidmaout: Device file released\n");
+	// pr_info("axidmaout: Device file released\n");
 	return 0;
 }
 void setup_DMA_transfer(struct device_data *dat, int buff_number, int count) {
@@ -260,7 +260,7 @@ void setup_DMA_transfer(struct device_data *dat, int buff_number, int count) {
 	/* align to 64bit boundary */
 	// printk("axidmaout: DMA setup: buffer:count %d:%d\n", buff_number, count);
 	aligned_count = (count >> 6) << 6;
-	pr_info("axidmaout: DMA setup: buffer:alignedcount %d:%d\n", buff_number, aligned_count);
+	// pr_info("axidmaout: DMA setup: buffer:alignedcount %d:%d\n", buff_number, aligned_count);
 	if((count != aligned_count) && (aligned_count < DMA_U8_SIZE)) {
 		pr_err("axidmaout: unaligned buffer: check this later\n");
 		aligned_count += 64;
@@ -286,7 +286,7 @@ void setup_DMA_transfer(struct device_data *dat, int buff_number, int count) {
 	// dma_async_issue_pending(rx_chan);
 	dma_async_issue_pending(tx_chan);
 
-	pr_info("axidma: dmastarted\n");
+	// pr_info("axidma: dmastarted\n");
 	return;
 
 }
@@ -295,7 +295,7 @@ ssize_t dma_write (struct file *pFile, const char __user *pBuff, size_t count, l
 	int bufnumber;
 	int dma_active_buf;
 	bool dma_data = false;
-	pr_info("axidma: device write called: %d\n", count);
+	// pr_info("axidma: device write called: %d\n", count);
 	dev_data = (struct device_data*)pFile->private_data;
 	mutex_lock(&dev_data->buff_ctrl_mutex);
 
