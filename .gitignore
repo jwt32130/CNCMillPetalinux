@@ -8,6 +8,9 @@ pre-built/linux/
 *.o
 *.jou
 *.log
-/components/plnx_workspace
-/components/yocto
+components/plnx_workspace/**
+components/yocto/**
 .Xil/**/*.bda
+!components/plnx_workspace/**/
+!components/plnx_workspace/device-tree/device-tree/*.dtsi
+!components/plnx_workspace/device-tree/device-tree/*.dts
