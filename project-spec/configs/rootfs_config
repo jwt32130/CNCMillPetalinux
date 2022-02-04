@@ -345,13 +345,13 @@ CONFIG_mtd-utils=y
 #
 # util-linux 
 #
-# CONFIG_util-linux is not set
-# CONFIG_util-linux-dev is not set
+CONFIG_util-linux=y
+CONFIG_util-linux-dev=y
 # CONFIG_util-linux-fsck.cramfs is not set
 # CONFIG_util-linux-swaponoff is not set
 # CONFIG_util-linux-sfdisk is not set
 # CONFIG_util-linux-uuidd is not set
-# CONFIG_util-linux-getopt is not set
+CONFIG_util-linux-getopt=y
 # CONFIG_util-linux-findfs is not set
 # CONFIG_util-linux-mountpoint is not set
 # CONFIG_util-linux-hwclock is not set
@@ -363,8 +363,8 @@ CONFIG_mtd-utils=y
 # CONFIG_util-linux-losetup is not set
 # CONFIG_util-linux-fstrim is not set
 # CONFIG_util-linux-cfdisk is not set
-# CONFIG_util-linux-agetty is not set
-# CONFIG_util-linux-bash-completion is not set
+CONFIG_util-linux-agetty=y
+CONFIG_util-linux-bash-completion=y
 # CONFIG_util-linux-lscpu is not set
 # CONFIG_util-linux-prlimit is not set
 # CONFIG_util-linux-umount is not set
@@ -521,12 +521,12 @@ CONFIG_can-utils=y
 # openssh 
 #
 CONFIG_openssh=y
-# CONFIG_openssh-misc is not set
-# CONFIG_openssh-dbg is not set
+CONFIG_openssh-misc=y
+CONFIG_openssh-dbg=y
 CONFIG_openssh-sshd=y
 CONFIG_openssh-keygen=y
 CONFIG_openssh-ssh=y
-# CONFIG_openssh-dev is not set
+CONFIG_openssh-dev=y
 CONFIG_openssh-sftp=y
 CONFIG_openssh-sftp-server=y
 CONFIG_openssh-scp=y
@@ -2342,20 +2342,20 @@ CONFIG_gdbserver=y
 #
 # glib-2.0 
 #
-# CONFIG_glib-2.0 is not set
-# CONFIG_glib-2.0-codegen is not set
-# CONFIG_glib-2.0-utils is not set
-# CONFIG_glib-2.0-dbg is not set
-# CONFIG_glib-2.0-bash-completion is not set
-# CONFIG_glib-2.0-dev is not set
+CONFIG_glib-2.0=y
+CONFIG_glib-2.0-codegen=y
+CONFIG_glib-2.0-utils=y
+CONFIG_glib-2.0-dbg=y
+CONFIG_glib-2.0-bash-completion=y
+CONFIG_glib-2.0-dev=y
 
 #
 # glibc 
 #
-# CONFIG_glibc is not set
-# CONFIG_glibc-dev is not set
-# CONFIG_glibc-dbg is not set
-# CONFIG_ldd is not set
+CONFIG_glibc=y
+CONFIG_glibc-dev=y
+CONFIG_glibc-dbg=y
+CONFIG_ldd=y
 
 #
 # gnome-desktop-testing 
@@ -2587,8 +2587,8 @@ CONFIG_packagegroup-core-boot=y
 #
 # packagegroup-core-buildessential 
 #
-# CONFIG_packagegroup-core-buildessential is not set
-# CONFIG_packagegroup-core-buildessential-dev is not set
+CONFIG_packagegroup-core-buildessential=y
+CONFIG_packagegroup-core-buildessential-dev=y
 # CONFIG_packagegroup-core-buildessential-dbg is not set
 
 #
@@ -3847,8 +3847,8 @@ CONFIG_u-boot-tools=y
 #
 # packagegroup-petalinux 
 #
-# CONFIG_packagegroup-petalinux is not set
-# CONFIG_packagegroup-petalinux-dev is not set
+CONFIG_packagegroup-petalinux=y
+CONFIG_packagegroup-petalinux-dev=y
 # CONFIG_packagegroup-petalinux-dbg is not set
 
 #
@@ -3861,9 +3861,9 @@ CONFIG_u-boot-tools=y
 #
 # packagegroup-petalinux-display-debug 
 #
-# CONFIG_packagegroup-petalinux-display-debug is not set
-# CONFIG_packagegroup-petalinux-display-debug-dbg is not set
-# CONFIG_packagegroup-petalinux-display-debug-dev is not set
+CONFIG_packagegroup-petalinux-display-debug=y
+CONFIG_packagegroup-petalinux-display-debug-dbg=y
+CONFIG_packagegroup-petalinux-display-debug-dev=y
 
 #
 # packagegroup-petalinux-lmsensors 
@@ -3946,9 +3946,9 @@ CONFIG_u-boot-tools=y
 #
 # packagegroup-petalinux-utils 
 #
-# CONFIG_packagegroup-petalinux-utils is not set
+CONFIG_packagegroup-petalinux-utils=y
 # CONFIG_packagegroup-petalinux-utils-dbg is not set
-# CONFIG_packagegroup-petalinux-utils-dev is not set
+CONFIG_packagegroup-petalinux-utils-dev=y
 
 #
 # packagegroup-petalinux-v4lutils 
@@ -3981,6 +3981,7 @@ CONFIG_auto-login=y
 CONFIG_axidmapolltest=y
 CONFIG_dmatest=y
 # CONFIG_gpio-demo is not set
+CONFIG_kmsdemo=y
 # CONFIG_peekpoke is not set
 
 #
@@ -3988,12 +3989,15 @@ CONFIG_dmatest=y
 #
 CONFIG_axidmaout=y
 CONFIG_cnccontroller=y
+# CONFIG_digilentencoder is not set
 CONFIG_dmalooptest=y
+# CONFIG_dynclk is not set
 CONFIG_testadder=y
 
 #
 # user packages 
 #
+CONFIG_libvrc=y
 
 #
 # PetaLinux RootFS Settings

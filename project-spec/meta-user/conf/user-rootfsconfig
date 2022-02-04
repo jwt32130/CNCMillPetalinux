@@ -10,3 +10,7 @@ CONFIG_axidmaout
 CONFIG_DMApolltest
 CONFIG_axidmapolltest
 CONFIG_cnccontroller
+CONFIG_digilentencoder
+CONFIG_dynclk
+CONFIG_kmsdemo
+CONFIG_libvrc

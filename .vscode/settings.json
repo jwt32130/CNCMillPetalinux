@@ -4,6 +4,8 @@
         "kernel.h": "c",
         "limits.h": "c",
         "types.h": "c",
-        "int-ll64.h": "c"
+        "int-ll64.h": "c",
+        "drm_encoder_slave.h": "c",
+        "libvrc.h": "c"
     }
 }

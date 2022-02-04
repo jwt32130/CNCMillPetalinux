@@ -1,0 +1,5 @@
+kernel_addr_r=0x10000000
+jtloadkernel=tftpboot ${kernel_addr_r} image.ub
+jtloaddtb=tftpboot ${fdt_addr_r} system.dtb
+bootargs=console=ttyPS0,115200 earlyprintk uio_pdrv_genirq.of_id=generic-uio video=HDMI-A-1:1920x1080-24@60 cma=256M drm.debug=0x00 xlnx_drm.fbdev_vres=2 root=/dev/mmcblk0p2 rootfstype=ext4 rw rootwait
+distro_bootcmd=echo JTBOOTCMD; run jtloadkernel; run jtloaddtb; bootm ${kernel_addr_r} - ${fdt_addr_r};

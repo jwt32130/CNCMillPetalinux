@@ -6,7 +6,7 @@
 
 / {
 	chosen {
-		bootargs = "console=ttyPS0,115200 earlycon root=/dev/ram0 rw";
+		bootargs = "console=ttyPS0,115200 earlycon root=/dev/mmcblk0p2 rw rootwait";
 		stdout-path = "serial0:115200n8";
 	};
 };
